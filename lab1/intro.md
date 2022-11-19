@@ -122,7 +122,7 @@ Generalnie to wiemy, że wynik będzie należał do pola F17 czyli będzie w zbi
 
 W zadaniu licząc ręcznie zauważamy zależność, która się nazywa Fermat Little Theoremi mówi o tym, że:
 
-**Jeśli `p` jest liczbą pierwszą, to dla każdą liczbę `a^p` od liczby `a` dzieli ileś wielokrotności `p`. Co zapisujemy jako `a^p -=- a mod p`**.
+**Jeśli `p` jest liczbą pierwszą, to każdą liczbę `a^p` od liczby `a` dzieli ileś wielokrotności `p`. Co zapisujemy jako `a^p -=- a mod p`**.
 
 >Np. liczby 8 i 2. 8 to 2^3, czyli p=3, no a między 8 i 2 są dokładnie dwie trójki.
 >
