@@ -129,3 +129,4 @@ Przykład:
 
 Jeśli ktoś wie że liczba reszta z dzielenia `x` przez 3 jest 2 (`x % 3 = 2`), reszta z dzielenia `x` przez 5 jest 3 (`x % 5 = 3`), a przez 7 to 2 (`x % 7 = 2`), to bez znajomości liczby `x`, ten ktoś wie, że reszta z dzielenia `x` przez 105 (`3 * 5 * 7`) jest 23.
 
+![](img/12.png)
