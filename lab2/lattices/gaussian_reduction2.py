@@ -5,22 +5,34 @@ def inner_product(a, b):
 
 	return ans
 
-def gauss(a, b):
-	if inner_product(a, a) > inner_product(b, b):
-		return gauss(b, a)
+def v_subtract(v1, v2):
+    res = [0, 0]
+    for i in range(2):
+        res[i] = v1[i] - v2[i]
+    return res
 
-	m = inner_product(a, b) // inner_product(a, a)
+def v_dot(v1, v2):
+    res = 0
+    for i in range(2):
+        res += v1[i] * v2[i]
+    return res
 
+def gauss(v1, v2):
+	# a)
+	if v_dot(v1, v1) > v_dot(v2, v2):
+		return gauss(v2, v1)
+	# b)
+	m = v_dot(v1, v2) // v_dot(v1, v1)
+	# c)
 	if m == 0:
-		return a, b
+		return v1, v2
+	# d)
+	v2 = v_subtract(v2,v1)
 
-	for i in range(2):
-		b[i] -= m * a[i]
-
-	return gauss(a, b)
+	return gauss(v1, v2)
 
 v = [846835985, 9834798552]
 u = [87502093, 123094980]
 
-(u, v) = gauss(u, v)
-print(inner_product(u, v))
+u, v = gauss(u, v)
+print(v_dot(u, v))
