@@ -22,7 +22,7 @@ def add_round_key(s, k):
     ]
     for x in range(4):
         for y in range(4):
-            res[x][y] = state[x][y] ^ round_key[x][y]
+            res[x][y] = s[x][y] ^ k[x][y]
             
     return res
 
