@@ -37,46 +37,38 @@ def json_send(hsh):
     remote.sendline(request)
 # ---------------------------------- J S O N    D E R U L O -------------------------------
 
-# Connect at nc socket.cryptohack.org 13371
-remote = remote('socket.cryptohack.org', 13373)
+remote = remote('socket.cryptohack.org', 13380)
 
-remote.recv()
+remote.recvuntil('Intercepted from Alice: ')
 res = json_recv()
-print(res) # dostajemy p g i A, skoro duże A to wiemy że od Alice
+print(res) # Alice: p g A
 
 p = int(res['p'], 16)
 g = int(res['g'], 16)
 A = int(res['A'], 16)
 
-print("BOB")
-
 remote.recvuntil('Intercepted from Bob: ')
 res = json_recv()
-print(res) # od Boba: B
+print(res) # Bob: B
 
 B = int(res['B'], 16)
 
 remote.recvuntil('Intercepted from Alice: ')
 res = json_recv()
-print(res) # Od Alice: iv oraz encrypted
+print(res) # Alice: iv i encrypted
 
 iv = res['iv']
 encrypted = res['encrypted']
 
-# do wywołania print(decrypt_flag(shared_secret, iv, encrypted_flag)) potrzebujemy shared_secret czyli b=pow(B,a,p)
-
-# Wysylam Bobowi jako Alice p,g,A, ale A daje 1, a g daje jako A
-remote.recvuntil('send him some parameters: ')
-json_send({'p': hex(p), 'g': hex(A), 'A': hex(1)})
-
-# Bob wysyła mi B, czyli pow(g,a,p)
-remote.recvuntil('Bob says to you: ')
-res = json_recv()
-print(res)
-
-# ale to co on mi wysyłał jako niby B, to tak naprawde jest `b` czyli jego secret, któego ja używam aby sobie decryptować flage
-# czyli oszukaliśmy go tym miszmaszem, żeby wysłał nam małe `b`, a myśli ze nam wysłał B, czysta matma
-shared_secret = int(res['B'], 16)
-
+# Mamy p,g,A,B. Musimy obliczyć b = pow(B, a, p), zeby jako Alice odszyfrować to co dał nam Bob
+# Najpierw wiec jak widać musimy mieć `a`, które sobie Alice wymyśliła
+# Wcześnij, gdy wiedzieliśmy ze Alice i Bob uzywaja multiplicative group, to wiedzieliśmy ze obliczenie a jest mega trudne
+# W zasadzie to cały DH opiera się na tym, czyli na Discrete Logarithm Problem
+# ale teraz skoro uzywają oni additive group, to `a` jest mega łatwo obliczyć
+#  (zgodnie z zadaniem 1.) a = A * g^(-1) mod p (modular inverse) 
+from Crypto.Util.number import inverse
+a = A * inverse(g, p) % p
+### więc teraz `b = B * a mod p` (a nie pow(B, a, p) jak do tej pory...)
+shared_secret = B * a % p
 
 print(decrypt_flag(shared_secret, iv, encrypted))
