@@ -14,13 +14,13 @@ AES, like all good block ciphers, performs a "keyed permutation".
 
 This means that it maps every possible input block to a unique output block, with a key determining which permutation to perform.
 
-Czyli AES dostaje blok, a klucz mu mówi jak zpermutować ten blok, to co wypluwa AES to zpermutowany blok.
+Czyli AES dostaje blok, a klucz mu mówi jak zpermutować ten blok - to co wypluwa AES to zpermutowany blok.
 
 Using the same key, the permutation can be performed in reverse, mapping the output block back to the original input block. It is important that there is a one-to-one correspondence between input and output blocks, otherwise we wouldn't be able to rely on the ciphertext to decrypt back to the same plaintext we started with.
 
 ![](img/2.png)
 
-### Resisting bruteforce
+### Resisting the bruteforce
 
 If a block cipher is secure, there should be no way for an attacker to distinguish the output of AES from a [random permutation](https://en.wikipedia.org/wiki/Pseudorandom_permutation) of bits.
 
@@ -80,7 +80,7 @@ Omówimy sobie **Initial key addition**. Jak wiesz rund jest 10, a my tych round
 
 Krok, który się nazywa *AddRoundKey*, czyli dodaj klucz rundy do state, po prostu robi XOR `state` i `round key`
 
-Czyli zanim jeszcze rozpoczniemy rundy to XOR'ujemy ten pierwszy round key z naszym state.
+Czyli zanim jeszcze rozpoczniemy pętle po rundkach to XOR'ujemy ten pierwszy round key z naszym state.
 
 ![](img/4.png)
 
@@ -112,9 +112,9 @@ Czyli to nie jest tak, że ten S-box sobie wymyślamy: To make the S-box, the fu
 
 The other crucial property described by Shannon is "**diffusion**" -  This relates to how every part of a cipher's input should spread to every part of the output.
 
-Substitution sama w sobie tworzy non-linearity, jednakże nie dystrybuuje jej na cały `state`. Bez diffusion, ten sam bajt na tej samej pozycji dostałby tę samą transformację za każdą rundą. To bez sensu, bo kryptoanalitycy by po prostu analizować each byte position separately. 
+Substitution sama w sobie tworzy non-linearity, jednakże nie dystrybuuje jej na cały `state`. Bez diffusion, ten sam bajt na tej samej pozycji dostałby tę samą transformację za każdą rundą. To bez sensu, bo kryptoanalitycy by po prostu mogli analizować each byte position separately. 
 
-Musimy alternować pojedyncze substytucje poprzez scramblingowanie `state'u`, ale tak, żeby substytucje zastosowane na jednym bajcie influencowały wszystkie inne bajty in the state.
+Musimy alternować pojedyncze substytucje poprzez scramblingowanie (*ang. szamotanina*) `state'u`, ale tak, żeby substytucje zastosowane na jednym bajcie influencowały wszystkie inne bajty in the state.
 
 <u>Each input into the next S-box then becomes a function of multiple bytes</u>, meaning that with every round the algebraic complexity of the system increases enormously.
 
@@ -130,7 +130,9 @@ The ***ShiftRows*** and ***MixColumns*** steps combine to achieve this. They wor
 
 ![](img/7.png)
 
-**MixColumns** już jest more complex. It performs Matrix multiplication in Rijndael's Galois field between the columns of the state matrix and a preset matrix.
+**MixColumns** już jest more complex. It performs Matrix multiplication in Rijndael's Galois field between the columns of the state matrix and a preset* matrix.
+
+> *(of a setting on a device) adjusted or applied in advance
 
 ![](img/8.png)
 
@@ -177,3 +179,9 @@ Najprostsza forma, każdy blok szyfrowany niezależnie.
 ![](img/11.png)
 
 Plaintext z bloku `n` jest najpierw XOR'owany z ciphertextem bloku `n-1` i dopiero odbywa się enkrypcja.
+
+# STREAM CIPHERS
+
+### Symmetry
+
+![](img/12.png)
