@@ -10,6 +10,8 @@ sudo apt update
 sudo apt install pip
 pip install pycryptodome
 git clone https://github.com/0x41gawor/crypto-lab
+git config --global user.name = "0x41gawor"
+git congig --global user.email = "41gawor@gmail.com"
 ```
 
 ## Soon Haari
