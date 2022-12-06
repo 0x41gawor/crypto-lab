@@ -2,6 +2,7 @@
 <p align="center">
   <img src="https://user-images.githubusercontent.com/54957423/205957803-48d0262a-1894-4345-876b-aba16790860b.png">
 </p>
+
 ## VM setup
 
 ```sh
