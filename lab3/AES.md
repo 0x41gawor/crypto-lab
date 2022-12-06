@@ -185,3 +185,5 @@ Plaintext z bloku `n` jest najpierw XOR'owany z ciphertextem bloku `n-1` i dopie
 ### Symmetry
 
 ![](img/12.png)
+
+![](img/13.png)
