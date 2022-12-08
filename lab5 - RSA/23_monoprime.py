@@ -13,7 +13,7 @@ ciphertext = 1613675503467306044514547561890289389649412803476620987987754660194
 # czyli totien z liczby pierwszej i, to i-1
 
 # kod kopiuje z poprzedniego zadania a podmieniam tylko linijke na totient
-
+ 
 totient = N-1
 
 d = pow(e, -1, totient) # klucz prywatny mam :D

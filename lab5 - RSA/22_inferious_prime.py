@@ -10,8 +10,8 @@ ciphertext = 39207274348578481322317340648475596807303160111338236677373
 # skąd wziąć totient?
 # totient to jest (p-1)*(q-1)
 # skąd wziąć `p` i `q`?
-# z dupy
-# nie no zart w poprzednim zadaniu nauczyliśmy się rozbijać `N` na `p` i `q`
+# z dupy 
+# nie no zart w poprzednim zadaniu nauczyliśmy się rozbijać `N` na `p` i `q`  # okazuje sie ze nie taki zart bo nie mozna korzystać z factordb
 # jak mam zainstalowane factordb to zrobię po prostu w terminalu 
 # factordb 742449129124467073921545687640895127535705902454369756401331
 
