@@ -1,0 +1,27 @@
+N = 17258212916191948536348548470938004244269544560039009244721959293554822498047075403658429865201816363311805874117705688359853941515579440852166618074161313773416434156467811969628473425365608002907061241714688204565170146117869742910273064909154666642642308154422770994836108669814632309362483307560217924183202838588431342622551598499747369771295105890359290073146330677383341121242366368309126850094371525078749496850520075015636716490087482193603562501577348571256210991732071282478547626856068209192987351212490642903450263288650415552403935705444809043563866466823492258216747445926536608548665086042098252335883
+e = 3
+ciphertext = 243251053617903760309941844835411292373350655973075480264001352919865180151222189820473358411037759381328642957324889519192337152355302808400638052620580409813222660643570085177957
+
+# We wcześniejszym zadaniu e było równe 1, co nie zmieniało w żaden sposób plaintext, domyślamy się więc, że skoro `e` jest "małe" to zmienia "mało"
+# skoro ciphertext = plaintext^e mod N, czyli u nas ciphertext = plaintext^3 mod N
+# druga obserwacja jest taka, że N jest ogromne, a plaintext malutki, więc możemy estymować, że `plaitext^3 mod N`` jest równy tyle samo co `plaintext^3`
+# w takim razie skoro `ciphertext = pow(plaintext,3)` to odwracając równanie `plaintext = root(ciphertext,3)`
+
+# skopiowane z gmpy2
+def iroot(x, n):
+    """Return (y, b) where y is the integer nth root of x and b is True if y is exact."""
+    if x == 0:
+        return x, True
+
+    k = (x.bit_length() - 1) // n
+    y = 1 << k
+    for i in range(k - 1, -1, -1):
+        z = y | 1 << i
+        if z ** n <= x:
+            y = z
+    return y, x == y ** n
+
+plaintext = iroot(ciphertext,3)[0]
+from Crypto.Util.number import *
+plaintext_as_hex = long_to_bytes(plaintext)
+print(plaintext_as_hex)
