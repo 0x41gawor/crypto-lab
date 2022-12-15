@@ -289,3 +289,112 @@ decrypted = long_to_bytes(pt)
 assert decrypted == flag
 ```
 
+## 3 Everything is Big
+
+```python
+#!/usr/bin/env python3
+
+from Crypto.Util.number import getPrime, bytes_to_long
+
+FLAG = b"crypto{?????????????????????????}"
+
+m = bytes_to_long(FLAG)
+
+def get_huge_RSA():
+    p = getPrime(1024) #zwraca losową 1024 bitową liczbe pierwszą
+    q = getPrime(1024)
+    N = p*q #mamy N
+    phi = (p-1)*(q-1) # liczymy totient
+    while True:
+        d = getPrime(256) # wczesniej d było liczone na podstawie e, teraz jest na odwrót
+        e = pow(d,-1,phi)
+        if e.bit_length() == N.bit_length(): # czyli teraz to jest tak, że e ma bardzo dużo bajtów, a d malutko, wcześniej było na odwrót. No bo zauważ, że zeby zapis `d = pow(e, -1, totient)` się zgadzał, to liczba bajtów musi się zgadzać w e,d i N
+            break
+    return N,e
+
+
+N, e = get_huge_RSA()
+c = pow(m, e, N)
+
+print(f'N = {hex(N)}')
+print(f'e = {hex(e)}')
+print(f'c = {hex(c)}')
+
+```
+
+## 4 Crossed Wires
+
+```python
+from Crypto.Util.number import getPrime, long_to_bytes, bytes_to_long, inverse
+import math
+from gmpy2 import next_prime
+
+# string flagi na serwerze jest prawdziwy
+FLAG = b"crypto{????????????????????????????????????????????????}"
+
+p = getPrime(1024) # randomowa liczba pierwsza 1024-bitowa
+q = getPrime(1024)
+N = p*q            
+phi = (p-1)*(q-1)
+e = 0x10001
+d = inverse(e, phi) # wygenerowanie wszystkich parametrów normalnie
+
+my_key = (N, d) # mój klucz prywatny
+
+friends = 5 # liczba friendsów
+friend_keys = [(N, getPrime(17)) for _ in range(friends)] # klucze przyjaciół to (N, random_prime_17bits)
+
+cipher = bytes_to_long(FLAG) # flaga jako long
+
+for key in friend_keys: # iteracja po kluczach kolegów
+    cipher = pow(cipher, key[1], key[0]) # cipher^key[1] mod key[0] == cipher^random_prime_17bytes mod N
+# czyli mamy zmienna cipher została aż 5 razy zaszyfrowana kluczami prywatnymi kolegów
+
+print(f"My private key: {my_key}")
+print(f"My Friend's public keys: {friend_keys}")
+print(f"Encrypted flag: {cipher}")
+
+# czyli N i d jest generowane randomowo, a potem jeden ciphertext jest wielokrotnie szyforwany poprzez `random_prime_17bytes`
+```
+
+
+
+# SIGNTURES PART 1
+
+## 1 Signing server
+
+```python
+#!/usr/bin/env python3
+
+from Crypto.Util.number import bytes_to_long, long_to_bytes
+from utils import listener
+
+
+
+class Challenge():
+    def __init__(self):
+    	# serwer nam pozwala albo dostać klucz publiczny (N,e), albo ciphertext (a w nim flage) albo popisać (H(plaintext)^d mod N)
+        self.before_input = "Welcome to my signing server. You can get_pubkey, get_secret, or sign.\n"
+	
+    def challenge(self, your_input):
+        if not 'option' in your_input:
+            return {"error": "You must send an option to this server"}
+		# zwraca klucz publiczny (N,e)
+        elif your_input['option'] == 'get_pubkey':
+            return {"N": hex(N), "e": hex(E) }
+		# wiadomość zaszyfrowana kluczem publicznym
+        elif your_input['option'] == 'get_secret':
+            secret = bytes_to_long(SECRET_MESSAGE)
+            return {"secret": hex(pow(secret, E, N)) }
+		# to odszyfrowuje nasz input, więc jak wsadzimy tam to co dostaniemy od get_secret to odszyfruje nam sekret xddd serwer sam się zaorał ahahhahah
+        elif your_input['option'] == 'sign':
+            msg = int(your_input['msg'], 16)
+            return {"signature": hex(pow(msg, D, N)) }
+
+        else:
+            return {"error": "Invalid option"}
+
+
+listener.start_server(port=13374)
+```
+
